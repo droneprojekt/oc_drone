@@ -1,0 +1,11 @@
+name = OC Drones
+description = Custom Module to handle drone functionality.
+package = Drones
+core = 7.x
+
+files[] = oc_drones.module
+
+; Information added by Drupal.org packaging script on 2014-05-20
+version = "7.x-0.1"
+core = "7.x"
+datestamp = ""

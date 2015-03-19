@@ -1,0 +1,37 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+function oc_drones_node_presave($node)
+{
+    if(isset($node) && $node->type == "journal") //is type journey log.
+    {
+        //Get value
+        $query = new EntityFieldQuery();
+        $result =   $query->entityCondition('entity_type', 'node')->entityCondition('bundle', 'pilot_log')
+                ->propertyCondition('uid', $node->uid)->execute();
+        $Pilot_entity = null;
+        //Generic way to get node info.
+        foreach($result["node"] as $key => $value)
+        {
+            $Pilot_entity = node_load($value->nid);
+            break;
+        }
+        
+        if($Pilot_entity->field_hours == "")
+        {
+            $Pilot_entity->field_hours = $node->field_hours;
+            $Pilot_entity->field_landings = $node->field_landings;
+        }
+        else
+        {
+            $Pilot_entity->field_hours['und'][0]['value'] += $node->field_hours['und'][0]['value'];
+            $Pilot_entity->field_pilotlog_landings['und'][0]['value'] += $node->field_pilotlog_landings['und'][0]['value'];
+        }
+        //save to pilot log.
+        node_save($Pilot_entity);
+    }
+}
